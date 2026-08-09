@@ -1,0 +1,16 @@
+fold=01 test_subject=001 mae=7.928449 rmse=11.728743 train_time_s=374.910 inference_time_s=0.214833
+fold=02 test_subject=002 mae=11.733347 rmse=16.738243 train_time_s=304.050 inference_time_s=0.211630
+fold=03 test_subject=003 mae=8.954908 rmse=14.908425 train_time_s=385.385 inference_time_s=0.136616
+fold=04 test_subject=004 mae=9.312495 rmse=13.881531 train_time_s=290.716 inference_time_s=0.138011
+fold=05 test_subject=005 mae=7.162553 rmse=11.289534 train_time_s=301.596 inference_time_s=0.245694
+fold=06 test_subject=006 mae=10.620025 rmse=17.309948 train_time_s=390.706 inference_time_s=0.168779
+fold=07 test_subject=007 mae=8.144526 rmse=13.595751 train_time_s=313.492 inference_time_s=0.219545
+fold=08 test_subject=008 mae=9.876809 rmse=14.405071 train_time_s=452.374 inference_time_s=0.209869
+fold=09 test_subject=009 mae=9.777046 rmse=15.858161 train_time_s=457.420 inference_time_s=0.225241
+fold=10 test_subject=010 mae=13.337266 rmse=21.770256 train_time_s=421.394 inference_time_s=0.208094
+fold=11 test_subject=011 mae=10.478023 rmse=15.906311 train_time_s=477.180 inference_time_s=0.239908
+fold=12 test_subject=012 mae=8.741302 rmse=14.620987 train_time_s=323.278 inference_time_s=0.237583
+fold=13 test_subject=013 mae=10.083641 rmse=17.106390 train_time_s=373.142 inference_time_s=0.218922
+fold=14 test_subject=014 mae=10.475233 rmse=16.620073 train_time_s=477.186 inference_time_s=0.159028
+fold=15 test_subject=015 mae=7.350032 rmse=11.371033 train_time_s=351.678 inference_time_s=0.050491
+fold=16 test_subject=016 mae=11.019347 rmse=15.904893 train_time_s=437.847 inference_time_s=0.192802
