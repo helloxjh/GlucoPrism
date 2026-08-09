@@ -1,0 +1,10 @@
+{
+  "model": "dcrnn",
+  "display_name": "DCRNN",
+  "encoder_layers": 1,
+  "decoder_layers": 1,
+  "diffusion_order": 2,
+  "adjacency": "fully_connected_normalized",
+  "prediction_steps": 12,
+  "prediction_horizons_minutes": [15, 30, 45, 60]
+}

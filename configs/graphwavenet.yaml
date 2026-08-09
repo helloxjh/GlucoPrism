@@ -1,0 +1,13 @@
+{
+  "model": "graphwavenet",
+  "display_name": "Graph WaveNet",
+  "blocks": 2,
+  "layers_per_block": 2,
+  "temporal_kernel_size": 2,
+  "diffusion_order": 2,
+  "node_embedding_dim": 10,
+  "skip_multiplier": 2,
+  "end_multiplier": 4,
+  "prediction_steps": 12,
+  "prediction_horizons_minutes": [15, 30, 45, 60]
+}

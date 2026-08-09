@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="3600" height="1220" viewBox="0 0 3600 1220" role="img" aria-labelledby="title desc">
+  <title id="title">GlucoPrism data flow with N physiological nodes</title>
+  <desc id="desc">Editable GlucoPrism data-flow diagram based on the reference layout, with the original arrow directions retained and a generic N-node physiological graph.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5" markerHeight="5" markerUnits="strokeWidth" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#55788f"/>
+    </marker>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; fill: #24313a; letter-spacing: 0; }
+      .title { font-size: 25px; font-weight: 700; text-anchor: middle; }
+      .subtitle { font-size: 13px; text-anchor: middle; fill: #50606b; }
+      .heading { font-size: 18px; font-weight: 700; text-anchor: middle; }
+      .label { font-size: 15px; }
+      .center { font-size: 15px; text-anchor: middle; }
+      .small { font-size: 13px; }
+      .small-center { font-size: 13px; text-anchor: middle; }
+      .tiny-center { font-size: 11px; text-anchor: middle; }
+      .tensor { font-size: 15px; font-weight: 700; text-anchor: middle; }
+      .node { font-size: 12px; font-weight: 700; text-anchor: middle; dominant-baseline: middle; }
+      .flow { fill: none; stroke: #55788f; stroke-width: 2.2; stroke-linecap: square; stroke-linejoin: miter; marker-end: url(#arrow); }
+      .edge { fill: none; stroke: #8a79aa; stroke-width: 2.2; }
+      .edge-strong { fill: none; stroke: #684b92; stroke-width: 3.2; }
+    </style>
+  </defs>
+
+  <rect width="3600" height="1220" fill="#ffffff"/>
+
+  <!-- 1. Input and dynamic feature augmentation -->
+  <rect x="40" y="80" width="660" height="1050" rx="18" fill="#f4faf7" stroke="#9fcfb8" stroke-width="2.5"/>
+  <rect x="40" y="80" width="660" height="72" rx="18" fill="#dff1e8"/>
+  <rect x="40" y="128" width="660" height="24" fill="#dff1e8"/>
+  <text class="title" x="370" y="125">Input and Dynamic Feature Augmentation</text>
+
+  <text class="heading" x="185" y="190">Historical CGM Sequence</text>
+  <rect x="80" y="210" width="210" height="180" rx="12" fill="#ffffff" stroke="#6ea9c8" stroke-width="2.3"/>
+  <text class="small-center" x="185" y="245">CGM signal</text>
+  <path d="M112 312 C137 280 160 332 185 294 C207 263 232 314 258 272" fill="none" stroke="#2c78a4" stroke-width="4"/>
+  <text class="tensor" x="185" y="362">[B, 24, 1]</text>
+  <path class="flow" d="M290 300 H355"/>
+
+  <rect x="360" y="175" width="285" height="275" rx="13" fill="#ffffff" stroke="#73b999" stroke-width="2.3"/>
+  <text class="heading" x="502" y="210">CGM Local Dynamics</text>
+  <text class="heading" x="502" y="233">Augmentation</text>
+  <text class="label" x="390" y="275">Value</text>
+  <text class="label" x="390" y="308">Delta / velocity</text>
+  <text class="label" x="390" y="341">Moving average (k = 3)</text>
+  <text class="label" x="390" y="374">Acceleration</text>
+  <rect x="490" y="390" width="125" height="45" rx="9" fill="#e7f3f8" stroke="#6ea9c8" stroke-width="1.8"/>
+  <text class="tensor" x="552" y="419">[B, 24, 4]</text>
+
+  <text class="heading" x="185" y="535">N Physiological Signals</text>
+  <rect x="80" y="555" width="210" height="275" rx="12" fill="#ffffff" stroke="#73b999" stroke-width="2.3"/>
+  <rect x="102" y="590" width="48" height="36" rx="8" fill="#e4f3ea"/><text class="node" x="126" y="608">S₁</text>
+  <rect x="161" y="590" width="48" height="36" rx="8" fill="#e4f3ea"/><text class="node" x="185" y="608">S₂</text>
+  <rect x="220" y="590" width="48" height="36" rx="8" fill="#e4f3ea"/><text class="node" x="244" y="608">S₃</text>
+  <text class="heading" x="126" y="680">…</text>
+  <rect x="170" y="650" width="86" height="44" rx="9" fill="#d8eee3" stroke="#67a889" stroke-width="1.8"/>
+  <text class="node" x="213" y="672">S_N</text>
+  <text class="small-center" x="185" y="750">N nodes in the target dataset</text>
+  <text class="tensor" x="185" y="792">[B, N, 24]</text>
+  <path class="flow" d="M290 690 H355"/>
+
+  <rect x="360" y="525" width="285" height="345" rx="13" fill="#ffffff" stroke="#73b999" stroke-width="2.3"/>
+  <text class="heading" x="502" y="560">Per-Node Dynamic</text>
+  <text class="heading" x="502" y="583">Augmentation</text>
+  <text class="label" x="390" y="625">Value</text>
+  <text class="label" x="390" y="658">Delta</text>
+  <text class="label" x="390" y="691">Moving average (k = 5)</text>
+  <text class="label" x="390" y="724">Local variability</text>
+  <text class="small" x="390" y="766">Independent processing per node</text>
+  <rect x="485" y="803" width="130" height="46" rx="9" fill="#e4f3ea" stroke="#67a889" stroke-width="1.8"/>
+  <text class="tensor" x="550" y="832">[B×N, 24, 4]</text>
+
+  <rect x="80" y="930" width="565" height="132" rx="12" fill="#e7f4ed" stroke="#8bc6aa" stroke-width="2"/>
+  <text class="center" x="362" y="975">5-min alignment · 24-step historical window</text>
+  <text class="small-center" x="362" y="1018">LOSO-CV · train-only normalization</text>
+
+  <!-- 2. Multiscale temporal encoder -->
+  <rect x="780" y="55" width="840" height="1080" rx="18" fill="#fff9f1" stroke="#e1af67" stroke-width="2.5"/>
+  <rect x="780" y="55" width="840" height="84" rx="18" fill="#fce9ca"/>
+  <rect x="780" y="112" width="840" height="27" fill="#fce9ca"/>
+  <text class="title" x="1200" y="98">Multiscale Temporal Encoder (MS-TE)</text>
+  <text class="subtitle" x="1200" y="124">Twin independent encoders with the same architecture</text>
+
+  <rect x="830" y="180" width="740" height="84" rx="11" fill="#ffffff" stroke="#d89b40" stroke-width="2.2"/>
+  <text class="center" x="1200" y="214">Input projection + GELU + LayerNorm</text>
+  <text class="small-center" x="1200" y="243">Multi-resolution positional encoding: sinusoidal + periodic rotary + relative embedding</text>
+  <path class="flow" d="M1200 267 V305"/>
+  <text class="heading" x="1200" y="335">Parallel Temporal Branches</text>
+
+  <rect x="830" y="370" width="210" height="255" rx="13" fill="#fff2df" stroke="#dda44b" stroke-width="2.3"/>
+  <text class="heading" x="935" y="410">Short-Range TCN</text>
+  <rect x="870" y="455" width="130" height="42" rx="7" fill="#ffffff" stroke="#dda44b" stroke-width="1.7"/>
+  <text class="small-center" x="935" y="482">dilation 1</text>
+  <rect x="870" y="525" width="130" height="42" rx="7" fill="#ffffff" stroke="#dda44b" stroke-width="1.7"/>
+  <text class="small-center" x="935" y="552">dilation 2</text>
+
+  <rect x="1095" y="370" width="210" height="255" rx="13" fill="#fff2df" stroke="#dda44b" stroke-width="2.3"/>
+  <text class="heading" x="1200" y="410">Long-Range TCN</text>
+  <text class="center" x="1200" y="475">Enlarged receptive field</text>
+  <text class="small-center" x="1200" y="515">dilations</text>
+  <text class="tensor" x="1200" y="555">1 / 2 / 4 / 8</text>
+
+  <rect x="1360" y="370" width="210" height="255" rx="13" fill="#fff2df" stroke="#dda44b" stroke-width="2.3"/>
+  <text class="heading" x="1465" y="410">Transformer</text>
+  <rect x="1400" y="455" width="130" height="42" rx="7" fill="#ffffff" stroke="#dda44b" stroke-width="1.7"/>
+  <text class="small-center" x="1465" y="482">encoder layer 1</text>
+  <rect x="1400" y="525" width="130" height="42" rx="7" fill="#ffffff" stroke="#dda44b" stroke-width="1.7"/>
+  <text class="small-center" x="1465" y="552">encoder layer 2</text>
+
+  <path class="flow" d="M935 628 V660 H1200"/>
+  <path class="flow" d="M1200 628 V660"/>
+  <path class="flow" d="M1465 628 V660 H1200"/>
+  <rect x="920" y="675" width="560" height="73" rx="12" fill="#f8dba9" stroke="#d49432" stroke-width="2.3"/>
+  <text class="center" x="1200" y="706">Branch Gating and Multiscale Fusion</text>
+  <text class="small-center" x="1200" y="733">Adaptive weighting of three temporal branches</text>
+  <path class="flow" d="M1200 751 V778"/>
+  <rect x="920" y="790" width="560" height="73" rx="12" fill="#ffffff" stroke="#d49432" stroke-width="2.3"/>
+  <text class="center" x="1200" y="821">Residual Temporal Refinement</text>
+  <text class="small-center" x="1200" y="848">Feature merge gate · residual connection</text>
+  <path class="flow" d="M1200 866 V895"/>
+
+  <rect x="830" y="910" width="300" height="70" rx="10" fill="#e7f3f8" stroke="#6ea9c8" stroke-width="2"/>
+  <text class="small-center" x="980" y="938">Temporal glucose dynamics features</text>
+  <text class="tensor" x="980" y="965">C: [B, 24, 64]</text>
+  <rect x="1210" y="910" width="360" height="70" rx="10" fill="#e4f3ea" stroke="#67a889" stroke-width="2"/>
+  <text class="small-center" x="1390" y="938">Per-node physiological temporal features</text>
+  <text class="tensor" x="1390" y="965">P_t: [B, N, 24, 64]</text>
+  <path class="flow" d="M1390 983 V1008"/>
+  <rect x="1210" y="1020" width="360" height="63" rx="10" fill="#ffffff" stroke="#67a889" stroke-width="2"/>
+  <text class="center" x="1390" y="1058">Temporal Attentive Pooling</text>
+  <path class="flow" d="M1390 1086 V1103"/>
+  <rect x="1260" y="1100" width="260" height="34" rx="8" fill="#dcefe6" stroke="#67a889" stroke-width="1.6"/>
+  <text class="tensor" x="1390" y="1123">P₀: [B, N, 64]</text>
+
+  <!-- 3. Physiological context graph encoder, generalized to N nodes -->
+  <rect x="1745" y="625" width="540" height="510" rx="18" fill="#f8f5fc" stroke="#bba9d5" stroke-width="2.5"/>
+  <rect x="1745" y="625" width="540" height="78" rx="18" fill="#e8e0f2"/>
+  <rect x="1745" y="678" width="540" height="25" fill="#e8e0f2"/>
+  <text class="title" x="2015" y="666">Physiological Context Graph Encoder</text>
+  <text class="subtitle" x="2015" y="691">PC-GE · N-node graph</text>
+
+  <g>
+    <line class="edge-strong" x1="1810" y1="810" x2="1875" y2="755"/>
+    <line class="edge" x1="1810" y1="810" x2="1800" y2="885"/>
+    <line class="edge" x1="1800" y1="885" x2="1875" y2="950"/>
+    <line class="edge" x1="1875" y1="950" x2="1965" y2="945"/>
+    <line class="edge-strong" x1="1965" y1="945" x2="2015" y2="835"/>
+    <line class="edge-strong" x1="1875" y1="755" x2="2015" y2="835"/>
+    <line class="edge" x1="1810" y1="810" x2="2015" y2="835"/>
+    <line class="edge" x1="1875" y1="755" x2="1965" y2="945"/>
+    <circle cx="1810" cy="810" r="27" fill="#d9cceb" stroke="#73559a" stroke-width="2.5"/><text class="node" x="1810" y="810">S₁</text>
+    <circle cx="1875" cy="755" r="27" fill="#f3d8df" stroke="#a66375" stroke-width="2.5"/><text class="node" x="1875" y="755">S₂</text>
+    <circle cx="1800" cy="885" r="27" fill="#dff0e7" stroke="#558f72" stroke-width="2.5"/><text class="node" x="1800" y="885">S₃</text>
+    <circle cx="2015" cy="835" r="27" fill="#d8eaf5" stroke="#4f8cac" stroke-width="2.5"/><text class="node" x="2015" y="835">Sᵢ</text>
+    <circle cx="1965" cy="945" r="27" fill="#f3d8df" stroke="#a66375" stroke-width="2.5"/><text class="node" x="1965" y="945">Sⱼ</text>
+    <circle cx="1875" cy="950" r="27" fill="#f8e6bc" stroke="#b58a34" stroke-width="2.5"/><text class="node" x="1875" y="950">S_N</text>
+    <text class="heading" x="1908" y="875">…</text>
+  </g>
+  <text class="small-center" x="1908" y="1000">N physiological nodes</text>
+
+  <rect x="2070" y="735" width="180" height="125" rx="10" fill="#ffffff" stroke="#8d73b1" stroke-width="1.9"/>
+  <text class="small-center" x="2160" y="766">Prior adjacency + prior mask</text>
+  <text class="small-center" x="2160" y="795">Learnable prior weight</text>
+  <text class="small-center" x="2160" y="824">Residual adjacency</text>
+  <text class="small-center" x="2160" y="847">+ edge importance</text>
+  <path class="flow" d="M2160 863 V885"/>
+  <rect x="2070" y="892" width="180" height="74" rx="10" fill="#ffffff" stroke="#8d73b1" stroke-width="1.9"/>
+  <text class="small-center" x="2160" y="921">Final adjacency</text>
+  <text class="small-center" x="2160" y="947">+ log edge bias</text>
+
+  <rect x="1810" y="1022" width="410" height="64" rx="10" fill="#ffffff" stroke="#7556a0" stroke-width="2"/>
+  <text class="center" x="2015" y="1050">2× Prior-Mask-Constrained GATv2</text>
+  <text class="small-center" x="2015" y="1075">Four heads · residual connection · normalization</text>
+  <text class="tensor" x="2015" y="1120">P_g: [B, N, 64]</text>
+
+  <!-- 4. Bidirectional cross-attention fusion -->
+  <rect x="2350" y="100" width="560" height="1035" rx="18" fill="#fff6f4" stroke="#dfaaa4" stroke-width="2.5"/>
+  <rect x="2350" y="100" width="560" height="80" rx="18" fill="#f5ddda"/>
+  <rect x="2350" y="155" width="560" height="25" fill="#f5ddda"/>
+  <text class="title" x="2630" y="145">Bidirectional Cross-Attention Fusion</text>
+  <text class="subtitle" x="2630" y="170">Fusion Module (BC-AFM)</text>
+
+  <rect x="2400" y="220" width="460" height="70" rx="10" fill="#ffffff" stroke="#d98a82" stroke-width="2"/>
+  <text class="center" x="2630" y="250">Projection into a shared latent space + LayerNorm</text>
+  <path class="flow" d="M2630 293 V325"/>
+
+  <rect x="2400" y="340" width="205" height="135" rx="12" fill="#f6e3e6" stroke="#bd7180" stroke-width="2.3"/>
+  <text class="heading" x="2502" y="378">Glucose-to-</text>
+  <text class="heading" x="2502" y="400">Physiology</text>
+  <text class="small-center" x="2502" y="430">Cross-Attention</text>
+  <text class="tensor" x="2502" y="459">C_p</text>
+  <rect x="2655" y="340" width="205" height="135" rx="12" fill="#e7f3f8" stroke="#6da8c5" stroke-width="2.3"/>
+  <text class="heading" x="2757" y="378">Physiology-to-</text>
+  <text class="heading" x="2757" y="400">Glucose</text>
+  <text class="small-center" x="2757" y="430">Cross-Attention</text>
+  <text class="tensor" x="2757" y="459">P_c</text>
+  <path class="flow" d="M2608 382 H2647"/>
+  <path class="flow" d="M2650 438 H2612"/>
+  <path class="flow" d="M2630 478 V510"/>
+
+  <rect x="2440" y="522" width="380" height="82" rx="10" fill="#ffffff" stroke="#d98a82" stroke-width="2"/>
+  <text class="center" x="2630" y="554">Physiological Context Realignment</text>
+  <text class="small-center" x="2630" y="583">Realigned to the CGM time axis → P_a</text>
+  <path class="flow" d="M2630 607 V638"/>
+  <rect x="2400" y="650" width="460" height="112" rx="12" fill="#f6dedb" stroke="#c75c56" stroke-width="2.5"/>
+  <text class="heading" x="2630" y="687">Confidence-Gated Fusion</text>
+  <text class="center" x="2630" y="718">Fuse C, C_p, and P_a</text>
+  <text class="small-center" x="2630" y="746">Minimum modality weight η = 0.05</text>
+  <path class="flow" d="M2630 765 V794"/>
+  <rect x="2400" y="807" width="460" height="72" rx="10" fill="#ffffff" stroke="#d98a82" stroke-width="2"/>
+  <text class="center" x="2630" y="850">FFN + residual connection + LayerNorm</text>
+  <path class="flow" d="M2630 882 V911"/>
+  <rect x="2470" y="925" width="320" height="58" rx="9" fill="#ffffff" stroke="#d98a82" stroke-width="1.8"/>
+  <text class="tensor" x="2630" y="961">F_out: [B, 24, 64]</text>
+
+  <!-- 5. Multi-horizon prediction head -->
+  <rect x="3035" y="100" width="525" height="1035" rx="18" fill="#f2f9fa" stroke="#91c5ca" stroke-width="2.5"/>
+  <rect x="3035" y="100" width="525" height="80" rx="18" fill="#dceff1"/>
+  <rect x="3035" y="155" width="525" height="25" fill="#dceff1"/>
+  <text class="title" x="3297" y="145">Multi-Horizon Prediction Head</text>
+
+  <text class="heading" x="3297" y="225">Learnable Horizon Queries</text>
+  <rect x="3080" y="248" width="91" height="48" rx="9" fill="#ffffff" stroke="#65aeb4" stroke-width="1.8"/><text class="node" x="3125" y="272">15 min</text>
+  <rect x="3188" y="248" width="91" height="48" rx="9" fill="#ffffff" stroke="#65aeb4" stroke-width="1.8"/><text class="node" x="3233" y="272">30 min</text>
+  <rect x="3296" y="248" width="91" height="48" rx="9" fill="#ffffff" stroke="#65aeb4" stroke-width="1.8"/><text class="node" x="3341" y="272">45 min</text>
+  <rect x="3404" y="248" width="91" height="48" rx="9" fill="#ffffff" stroke="#65aeb4" stroke-width="1.8"/><text class="node" x="3449" y="272">60 min</text>
+  <path class="flow" d="M3297 299 V320"/>
+  <rect x="3160" y="328" width="275" height="50" rx="9" fill="#ffffff" stroke="#65aeb4" stroke-width="1.8"/>
+  <text class="small-center" x="3297" y="359">Horizon Distance Conditioning</text>
+  <path class="flow" d="M3297 381 V406"/>
+
+  <rect x="3080" y="418" width="435" height="82" rx="10" fill="#ffffff" stroke="#65aeb4" stroke-width="2"/>
+  <text class="center" x="3297" y="450">Multi-Head Attention over F_out</text>
+  <text class="small-center" x="3297" y="479">Horizon-specific context representations</text>
+  <path class="flow" d="M3297 503 V530"/>
+
+  <rect x="3080" y="542" width="205" height="105" rx="10" fill="#e3f2f3" stroke="#65aeb4" stroke-width="1.8"/>
+  <text class="center" x="3182" y="578">Long-Term Context</text>
+  <text class="center" x="3182" y="601">Calibration</text>
+  <text class="small-center" x="3182" y="630">Global mean + trend</text>
+  <rect x="3310" y="542" width="205" height="105" rx="10" fill="#e3f2f3" stroke="#65aeb4" stroke-width="1.8"/>
+  <text class="center" x="3412" y="578">Progressive Feature</text>
+  <text class="center" x="3412" y="601">Refinement</text>
+  <text class="small-center" x="3412" y="630">Across ordered horizons</text>
+  <path class="flow" d="M3297 650 V678"/>
+
+  <rect x="3125" y="690" width="345" height="72" rx="10" fill="#ffffff" stroke="#65aeb4" stroke-width="2"/>
+  <text class="center" x="3297" y="720">Four Horizon-Specific MLP Heads</text>
+  <text class="small-center" x="3297" y="747">Residual blood glucose Δ</text>
+  <path class="flow" d="M3297 765 V798"/>
+  <circle cx="3297" cy="820" r="19" fill="#ffffff" stroke="#65aeb4" stroke-width="2"/>
+  <text class="heading" x="3297" y="827">+</text>
+  <path class="flow" d="M3297 842 V872"/>
+
+  <rect x="3125" y="885" width="345" height="88" rx="11" fill="#d7ecee" stroke="#54a3aa" stroke-width="2.2"/>
+  <text class="tensor" x="3297" y="920">ŷ = [ŷ₁₅, ŷ₃₀, ŷ₄₅, ŷ₆₀]</text>
+  <text class="tensor" x="3297" y="954">[B, 4]</text>
+  <path class="flow" d="M3297 976 V1002"/>
+  <rect x="3125" y="1015" width="345" height="82" rx="11" fill="#cfe7ea" stroke="#45949c" stroke-width="2.2"/>
+  <text class="heading" x="3297" y="1050">Blood Glucose Prediction Output</text>
+  <text class="small-center" x="3297" y="1078">15 / 30 / 45 / 60 min</text>
+
+  <!-- Inter-module data flow: directions match the reference diagram -->
+  <path class="flow" d="M645 275 H770 V220 H825"/>
+  <text class="small-center" x="715" y="205">Augmented CGM</text>
+  <path class="flow" d="M645 705 H735 V245 H825"/>
+  <text class="small-center" x="720" y="258">Physiological features</text>
+
+  <path class="flow" d="M980 980 V1000 H1665 V245 H2395"/>
+  <text class="tensor" x="1715" y="232">C: [B, 24, 64]</text>
+
+  <path class="flow" d="M1520 1117 H1690 V880 H1738"/>
+  <text class="tensor" x="1655" y="1103">P₀</text>
+
+  <path class="flow" d="M2285 1115 H2320 V265 H2395"/>
+  <text class="tensor" x="2305" y="286">P_g</text>
+
+  <path class="flow" d="M2790 954 H2950 V458 H3073"/>
+  <text class="tensor" x="2953" y="445">F_out</text>
+
+  <path class="flow" d="M185 392 V1185 H2985 V820 H3275"/>
+  <text class="small-center" x="2180" y="1176">Last observed CGM value y_t</text>
+</svg>

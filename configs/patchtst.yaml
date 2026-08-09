@@ -1,0 +1,11 @@
+{
+  "model": "patchtst",
+  "display_name": "PatchTST",
+  "patch_length": 6,
+  "stride": 3,
+  "encoder_layers": 2,
+  "feedforward_multiplier": 4,
+  "revin": true,
+  "prediction_steps": 12,
+  "prediction_horizons_minutes": [15, 30, 45, 60]
+}

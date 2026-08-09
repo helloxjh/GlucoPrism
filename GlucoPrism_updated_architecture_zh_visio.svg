@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="3600" height="1870" viewBox="0 0 3600 1870">
+  <title id="title">GlucoPrism 更新后的模型架构</title>
+  <desc id="desc">GlucoPrism 从多模态可穿戴数据准备、动态特征增强、多尺度时间编码、生理上下文图编码、双向交叉注意力融合到多预测视界血糖预测的完整架构。</desc>
+  <defs>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5" markerHeight="5" markerUnits="strokeWidth" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2878a8"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5" markerHeight="5" markerUnits="strokeWidth" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#318469"/>
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5" markerHeight="5" markerUnits="strokeWidth" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#72539c"/>
+    </marker>
+    <marker id="arrow-coral" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5" markerHeight="5" markerUnits="strokeWidth" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#c75c56"/>
+    </marker>
+    <marker id="arrow-gray" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5" markerHeight="5" markerUnits="strokeWidth" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#62707f"/>
+    </marker>
+    <marker id="arrow-inner-gray" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5" markerHeight="5" markerUnits="strokeWidth" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#62707f"/>
+    </marker>
+    <marker id="arrow-inner-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5" markerHeight="5" markerUnits="strokeWidth" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2878a8"/>
+    </marker>
+    <style>
+      text { font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #1f2933; letter-spacing: 0; }
+      .panel-title { font-size: 42px; font-weight: 700; text-anchor: middle; }
+      .section-title { font-size: 32px; font-weight: 700; text-anchor: middle; }
+      .body { font-size: 28px; font-weight: 400; }
+      .body-center { font-size: 28px; font-weight: 400; text-anchor: middle; }
+      .small { font-size: 24px; font-weight: 400; }
+      .small-center { font-size: 24px; font-weight: 400; text-anchor: middle; }
+      .shape { font-size: 27px; font-weight: 700; text-anchor: middle; }
+      .chip { font-size: 25px; font-weight: 700; text-anchor: middle; dominant-baseline: middle; }
+      .signal-chip { font-size: 20px; font-weight: 700; text-anchor: middle; dominant-baseline: middle; }
+      .node { font-size: 20px; font-weight: 700; text-anchor: middle; dominant-baseline: middle; }
+      .flow { fill: none; stroke-width: 3; stroke-linecap: square; stroke-linejoin: miter; }
+      .inner-flow { fill: none; stroke: #62707f; stroke-width: 3; stroke-linecap: square; stroke-linejoin: miter; marker-end: url(#arrow-inner-gray); }
+      .anchor-flow { fill: none; stroke: #2878a8; stroke-width: 3; stroke-linecap: square; stroke-linejoin: miter; marker-end: url(#arrow-inner-blue); }
+      .edge { stroke: #8d79ad; stroke-width: 4; opacity: 0.8; }
+      .edge-strong { stroke: #5f438c; stroke-width: 7; opacity: 0.88; }
+      .dash { stroke-dasharray: 12 10; }
+    </style>
+  </defs>
+
+  <rect width="3600" height="1870" fill="#ffffff"/>
+
+  <!-- Stage 1: Data preparation -->
+  <g>
+    <rect x="70" y="70" width="980" height="790" rx="28" fill="#f3f8fc" stroke="#b7d6e8" stroke-width="4"/>
+    <rect x="70" y="70" width="980" height="92" rx="28" fill="#dceef7"/>
+    <rect x="70" y="132" width="980" height="30" fill="#dceef7"/>
+  </g>
+  <text class="panel-title" x="560" y="130">数据准备</text>
+
+  <rect x="120" y="205" width="305" height="132" rx="18" fill="#ffffff" stroke="#88bdd7" stroke-width="4"/>
+  <path d="M160 300 C195 255 230 332 270 276 C305 230 345 305 388 245" fill="none" stroke="#2878a8" stroke-width="5"/>
+  <text class="section-title" x="272" y="238">血糖信号</text>
+  <text class="small-center" x="272" y="322">5 分钟采样值</text>
+
+  <rect x="455" y="205" width="545" height="132" rx="18" fill="#ffffff" stroke="#88bdd7" stroke-width="4"/>
+  <text class="section-title" x="727" y="243">可穿戴生理信号</text>
+  <g>
+    <rect x="490" y="272" width="78" height="44" rx="12" fill="#e8f4f9"/><text class="chip" x="529" y="294">S₁</text>
+    <rect x="584" y="272" width="78" height="44" rx="12" fill="#e8f4f9"/><text class="chip" x="623" y="294">S₂</text>
+    <rect x="678" y="272" width="78" height="44" rx="12" fill="#e8f4f9"/><text class="chip" x="717" y="294">S₃</text>
+    <rect x="772" y="272" width="78" height="44" rx="12" fill="#e8f4f9"/><text class="chip" x="811" y="294">…</text>
+    <rect x="866" y="272" width="92" height="44" rx="12" fill="#e8f4f9"/><text class="chip" x="912" y="294">S_N</text>
+  </g>
+
+  <path class="inner-flow" d="M560 350 V396"/>
+  <g>
+    <rect x="125" y="405" width="870" height="74" rx="16" fill="#e9f4fa" stroke="#a7cddd" stroke-width="3"/>
+    <text class="body-center" x="560" y="452">5 分钟重采样与多模态时间对齐</text>
+    <rect x="125" y="500" width="870" height="92" rx="16" fill="#ffffff" stroke="#a7cddd" stroke-width="3"/>
+    <text class="body-center" x="560" y="538">短缺失间隔插补</text>
+    <text class="small-center" x="560" y="572">长缺失间隔排除</text>
+    <rect x="125" y="613" width="870" height="82" rx="16" fill="#e9f4fa" stroke="#a7cddd" stroke-width="3"/>
+    <text class="body-center" x="560" y="664">24 步历史滑动窗口</text>
+    <rect x="125" y="716" width="870" height="92" rx="16" fill="#ffffff" stroke="#a7cddd" stroke-width="3"/>
+    <text class="body-center" x="560" y="755">留一受试者交叉验证（LOSO-CV）</text>
+    <text class="small-center" x="560" y="790">仅使用训练集归一化</text>
+  </g>
+  <path class="inner-flow" d="M560 479 V496"/>
+  <path class="inner-flow" d="M560 592 V609"/>
+  <path class="inner-flow" d="M560 695 V712"/>
+
+  <!-- Stage 2: Dynamic feature augmentation -->
+  <g>
+    <rect x="70" y="975" width="980" height="825" rx="28" fill="#f3faf6" stroke="#b7dfcc" stroke-width="4"/>
+    <rect x="70" y="975" width="980" height="92" rx="28" fill="#dff2e8"/>
+    <rect x="70" y="1037" width="980" height="30" fill="#dff2e8"/>
+  </g>
+  <text class="panel-title" x="560" y="1035">动态特征增强</text>
+
+  <rect x="120" y="1115" width="880" height="252" rx="20" fill="#ffffff" stroke="#94cbb2" stroke-width="4"/>
+  <rect x="120" y="1115" width="250" height="252" rx="20" fill="#e5f4eb"/>
+  <rect x="350" y="1115" width="20" height="252" fill="#e5f4eb"/>
+  <text class="section-title" x="245" y="1185">血糖信号</text>
+  <text class="small-center" x="245" y="1230">[B, 24, 1]</text>
+  <path d="M160 1295 C190 1250 220 1330 250 1277 C280 1235 310 1305 340 1250" fill="none" stroke="#2878a8" stroke-width="5"/>
+  <text class="body" x="410" y="1175">数值</text>
+  <text class="body" x="410" y="1228">差分 / 速度</text>
+  <text class="body" x="410" y="1281">移动平均（k = 3）</text>
+  <text class="body" x="410" y="1334">加速度</text>
+  <rect x="748" y="1160" width="214" height="144" rx="16" fill="#e8f4f9" stroke="#88bdd7" stroke-width="3"/>
+  <text class="small-center" x="855" y="1210">增强后的</text>
+  <text class="small-center" x="855" y="1246">血糖特征</text>
+  <text class="shape" x="855" y="1287">[B, 24, 4]</text>
+
+  <rect x="120" y="1412" width="880" height="318" rx="20" fill="#ffffff" stroke="#94cbb2" stroke-width="4"/>
+  <rect x="120" y="1412" width="250" height="318" rx="20" fill="#e5f4eb"/>
+  <rect x="350" y="1412" width="20" height="318" fill="#e5f4eb"/>
+  <text class="section-title" x="245" y="1482">生理信号</text>
+  <text class="small-center" x="245" y="1527">N 个节点</text>
+  <text class="small-center" x="245" y="1564">[B, N, 24]</text>
+  <g fill="#77b89b">
+    <circle cx="178" cy="1625" r="13"/><circle cx="220" cy="1602" r="13"/><circle cx="262" cy="1632" r="13"/><circle cx="330" cy="1605" r="18"/>
+  </g>
+  <text class="small-center" x="297" y="1624">…</text>
+  <text class="node" x="330" y="1605">N</text>
+  <text class="body" x="410" y="1480">数值</text>
+  <text class="body" x="410" y="1533">差分</text>
+  <text class="body" x="410" y="1586">移动平均（k = 5）</text>
+  <text class="body" x="410" y="1639">局部变异性</text>
+  <text class="small" x="410" y="1692">各节点独立处理</text>
+  <rect x="748" y="1487" width="214" height="160" rx="16" fill="#e5f4eb" stroke="#77b89b" stroke-width="3"/>
+  <text class="small-center" x="855" y="1537">增强后的</text>
+  <text class="small-center" x="855" y="1573">生理信号</text>
+  <text class="shape" x="855" y="1623">[B×N, 24, 4]</text>
+
+  <!-- Stage 3: MS-TE -->
+  <g>
+    <rect x="1240" y="70" width="1070" height="1010" rx="28" fill="#fff9f1" stroke="#f1c891" stroke-width="4"/>
+    <rect x="1240" y="70" width="1070" height="112" rx="28" fill="#fce8ca"/>
+    <rect x="1240" y="152" width="1070" height="30" fill="#fce8ca"/>
+  </g>
+  <text class="panel-title" x="1775" y="125">多尺度时间编码模块（MS-TE）</text>
+  <text class="small-center" x="1775" y="166">采用相同结构的独立编码器</text>
+
+  <rect x="1295" y="224" width="960" height="102" rx="18" fill="#ffffff" stroke="#e4b76f" stroke-width="3"/>
+  <text class="body-center" x="1775" y="266">输入投影 + GELU + 层归一化</text>
+  <text class="small-center" x="1775" y="304">多分辨率位置编码：正弦编码 + 周期 8/24/72 + 可学习嵌入</text>
+  <path class="inner-flow" d="M1775 327 V371"/>
+
+  <text class="section-title" x="1775" y="403">并行时间分支</text>
+  <g>
+    <rect x="1295" y="435" width="280" height="235" rx="20" fill="#fff2de" stroke="#e2ad58" stroke-width="4"/>
+    <text class="section-title" x="1435" y="486">短期时间卷积</text>
+    <rect x="1340" y="522" width="190" height="52" rx="12" fill="#ffffff" stroke="#e2ad58" stroke-width="3"/>
+    <text class="small-center" x="1435" y="557">膨胀率 1</text>
+    <rect x="1340" y="592" width="190" height="52" rx="12" fill="#ffffff" stroke="#e2ad58" stroke-width="3"/>
+    <text class="small-center" x="1435" y="627">膨胀率 2</text>
+
+    <rect x="1635" y="435" width="280" height="235" rx="20" fill="#fff2de" stroke="#e2ad58" stroke-width="4"/>
+    <text class="section-title" x="1775" y="486">长程空洞卷积</text>
+    <text class="body-center" x="1775" y="548">空洞时间</text>
+    <text class="body-center" x="1775" y="588">卷积</text>
+    <text class="small-center" x="1775" y="633">膨胀率 1 / 2 / 4 / 8</text>
+
+    <rect x="1975" y="435" width="280" height="235" rx="20" fill="#fff2de" stroke="#e2ad58" stroke-width="4"/>
+    <text class="section-title" x="2115" y="486">全局自注意力</text>
+    <rect x="2020" y="525" width="190" height="48" rx="12" fill="#ffffff" stroke="#e2ad58" stroke-width="3"/>
+    <text class="small-center" x="2115" y="558">编码器层 1</text>
+    <rect x="2020" y="595" width="190" height="48" rx="12" fill="#ffffff" stroke="#e2ad58" stroke-width="3"/>
+    <text class="small-center" x="2115" y="628">编码器层 2</text>
+  </g>
+  <path class="inner-flow" d="M1435 671 V718 H1775"/>
+  <path class="inner-flow" d="M1775 671 V718"/>
+  <path class="inner-flow" d="M2115 671 V718 H1775"/>
+
+  <rect x="1450" y="730" width="650" height="88" rx="18" fill="#f8dcae" stroke="#d79a3e" stroke-width="4"/>
+  <text class="body-center" x="1775" y="767">分支门控</text>
+  <text class="small-center" x="1775" y="800">多尺度融合</text>
+  <path class="inner-flow" d="M1775 820 V851"/>
+  <rect x="1450" y="862" width="650" height="84" rx="18" fill="#ffffff" stroke="#d79a3e" stroke-width="4"/>
+  <text class="body-center" x="1775" y="896">残差时间细化</text>
+  <text class="small-center" x="1775" y="930">特征复用门控</text>
+
+  <rect x="1295" y="978" width="410" height="66" rx="15" fill="#e8f4f9" stroke="#88bdd7" stroke-width="3"/>
+  <text class="shape" x="1500" y="1020">C: [B, 24, 64]</text>
+  <rect x="1750" y="965" width="505" height="78" rx="15" fill="#e5f4eb" stroke="#77b89b" stroke-width="3"/>
+  <text class="small-center" x="2002" y="997">时间注意力池化</text>
+  <text class="shape" x="2002" y="1032">P₀: [B, N, 64]</text>
+
+  <!-- Stage 4: PC-GE -->
+  <g>
+    <rect x="1240" y="1190" width="1070" height="610" rx="28" fill="#f8f5fc" stroke="#cbbce0" stroke-width="4"/>
+    <rect x="1240" y="1190" width="1070" height="105" rx="28" fill="#e9e1f3"/>
+    <rect x="1240" y="1265" width="1070" height="30" fill="#e9e1f3"/>
+  </g>
+  <text class="panel-title" x="1775" y="1254">生理上下文图编码模块（PC-GE）</text>
+
+  <!-- physiological graph -->
+  <g>
+    <line class="edge-strong" x1="1435" y1="1390" x2="1530" y2="1355"/>
+    <line class="edge" x1="1355" y1="1475" x2="1435" y2="1390"/>
+    <line class="edge" x1="1355" y1="1475" x2="1430" y2="1590"/>
+    <line class="edge" x1="1430" y1="1590" x2="1585" y2="1570"/>
+    <line class="edge-strong" x1="1585" y1="1570" x2="1620" y2="1440"/>
+    <line class="edge-strong" x1="1530" y1="1355" x2="1620" y2="1440"/>
+    <line class="edge" x1="1435" y1="1390" x2="1620" y2="1440"/>
+    <line class="edge" x1="1530" y1="1355" x2="1585" y2="1570"/>
+    <line class="edge" x1="1355" y1="1475" x2="1585" y2="1570"/>
+    <circle cx="1355" cy="1475" r="43" fill="#dff0e7" stroke="#558f72" stroke-width="4"/><text class="node" x="1355" y="1475">S₁</text>
+    <circle cx="1435" cy="1390" r="43" fill="#dacceb" stroke="#72539c" stroke-width="4"/><text class="node" x="1435" y="1390">S₂</text>
+    <circle cx="1530" cy="1355" r="43" fill="#f4d9df" stroke="#a86476" stroke-width="4"/><text class="node" x="1530" y="1355">S₃</text>
+    <circle cx="1620" cy="1440" r="43" fill="#d8ebf6" stroke="#4f8cac" stroke-width="4"/><text class="node" x="1620" y="1440">Sᵢ</text>
+    <circle cx="1585" cy="1570" r="43" fill="#f4d9df" stroke="#a86476" stroke-width="4"/><text class="node" x="1585" y="1570">Sⱼ</text>
+    <circle cx="1430" cy="1590" r="43" fill="#f9e8bf" stroke="#b88c34" stroke-width="4"/><text class="node" x="1430" y="1590">S_N</text>
+    <text class="section-title" x="1508" y="1502">…</text>
+    <text class="small-center" x="1488" y="1680">N 个生理节点</text>
+  </g>
+
+  <g>
+    <rect x="1700" y="1332" width="250" height="125" rx="18" fill="#ffffff" stroke="#9d83be" stroke-width="3"/>
+    <text class="small-center" x="1825" y="1372">生理先验</text>
+    <text class="small-center" x="1825" y="1407">邻接矩阵 + 掩码</text>
+    <text class="small-center" x="1825" y="1440">可学习先验权重</text>
+    <rect x="2000" y="1332" width="250" height="125" rx="18" fill="#ffffff" stroke="#9d83be" stroke-width="3"/>
+    <text class="small-center" x="2125" y="1372">残差邻接矩阵</text>
+    <text class="small-center" x="2125" y="1407">边重要性</text>
+    <text class="small-center" x="2125" y="1440">学习</text>
+    <path class="inner-flow" d="M1952 1395 H1995"/>
+    <rect x="1700" y="1495" width="550" height="100" rx="18" fill="#e9e1f3" stroke="#72539c" stroke-width="4"/>
+    <text class="body-center" x="1975" y="1533">最终邻接矩阵 + 对数边偏置</text>
+    <text class="small-center" x="1975" y="1572">先验掩码约束拓扑</text>
+    <path class="inner-flow" d="M1975 1459 V1490"/>
+    <rect x="1700" y="1634" width="550" height="104" rx="18" fill="#ffffff" stroke="#72539c" stroke-width="4"/>
+    <text class="body-center" x="1975" y="1674">2 层 GATv2 · 4 个注意力头</text>
+    <text class="small-center" x="1975" y="1712">残差连接 + 归一化</text>
+    <path class="inner-flow" d="M1975 1597 V1629"/>
+    <text class="shape" x="1975" y="1780">P_g: [B, N, 64]</text>
+  </g>
+
+  <!-- Stage 5: BC-AFM -->
+  <g>
+    <rect x="2500" y="70" width="1030" height="880" rx="28" fill="#fff6f4" stroke="#e6b4ae" stroke-width="4"/>
+    <rect x="2500" y="70" width="1030" height="112" rx="28" fill="#f6dedb"/>
+    <rect x="2500" y="152" width="1030" height="30" fill="#f6dedb"/>
+  </g>
+  <text class="panel-title" x="3015" y="120">双向交叉注意力融合模块</text>
+  <text class="panel-title" x="3015" y="164">（BC-AFM）</text>
+
+  <rect x="2570" y="220" width="890" height="78" rx="18" fill="#ffffff" stroke="#d9948c" stroke-width="3"/>
+  <text class="body-center" x="3015" y="270">统一隐空间投影 + 层归一化</text>
+
+  <rect x="2570" y="340" width="405" height="145" rx="20" fill="#f5e5ec" stroke="#b7788c" stroke-width="4"/>
+  <text class="section-title" x="2772" y="383">血糖到生理</text>
+  <text class="body-center" x="2772" y="428">交叉注意力</text>
+  <text class="shape" x="2772" y="468">C_p</text>
+  <rect x="3055" y="340" width="405" height="145" rx="20" fill="#e8f4f9" stroke="#6da8c5" stroke-width="4"/>
+  <text class="section-title" x="3257" y="383">生理到血糖</text>
+  <text class="body-center" x="3257" y="428">交叉注意力</text>
+  <text class="shape" x="3257" y="468">P_c</text>
+  <path class="inner-flow" d="M2977 412 H3050"/>
+  <path class="inner-flow" d="M3053 444 H2980"/>
+
+  <rect x="2775" y="530" width="480" height="100" rx="18" fill="#ffffff" stroke="#d9948c" stroke-width="4"/>
+  <text class="body-center" x="3015" y="568">生理上下文重对齐</text>
+  <text class="small-center" x="3015" y="607">对齐至血糖时间轴 → P_a</text>
+  <path class="inner-flow" d="M3257 487 V510 H3015 V525"/>
+
+  <rect x="2700" y="665" width="630" height="128" rx="20" fill="#f6dedb" stroke="#c75c56" stroke-width="4"/>
+  <text class="section-title" x="3015" y="716">置信度门控融合</text>
+  <text class="small-center" x="3015" y="752">融合 C、C_p 和 P_a</text>
+  <text class="small-center" x="3015" y="782">最小模态权重 η = 0.05</text>
+  <path class="inner-flow" d="M2772 487 V641 H2860 V660"/>
+  <path class="inner-flow" d="M3015 632 V660"/>
+
+  <rect x="2700" y="824" width="630" height="78" rx="18" fill="#ffffff" stroke="#c75c56" stroke-width="4"/>
+  <text class="body-center" x="3015" y="874">前馈网络 + 残差连接 + 层归一化</text>
+  <path class="inner-flow" d="M3015 796 V819"/>
+  <text class="shape" x="3015" y="934">F_out: [B, 24, 64]</text>
+
+  <!-- Stage 6: Prediction head -->
+  <g>
+    <rect x="2500" y="1060" width="1030" height="800" rx="28" fill="#f2f9fa" stroke="#add6d9" stroke-width="4"/>
+    <rect x="2500" y="1060" width="1030" height="100" rx="28" fill="#dceff1"/>
+    <rect x="2500" y="1130" width="1030" height="30" fill="#dceff1"/>
+  </g>
+  <text class="panel-title" x="3015" y="1125">多预测视界输出头</text>
+
+  <text class="section-title" x="2785" y="1214">可学习预测视界查询</text>
+  <g>
+    <rect x="2580" y="1240" width="150" height="70" rx="16" fill="#ffffff" stroke="#69aeb3" stroke-width="3"/><text class="chip" x="2655" y="1275">15 分钟</text>
+    <rect x="2745" y="1240" width="150" height="70" rx="16" fill="#ffffff" stroke="#69aeb3" stroke-width="3"/><text class="chip" x="2820" y="1275">30 分钟</text>
+    <rect x="2910" y="1240" width="150" height="70" rx="16" fill="#ffffff" stroke="#69aeb3" stroke-width="3"/><text class="chip" x="2985" y="1275">45 分钟</text>
+    <rect x="3075" y="1240" width="150" height="70" rx="16" fill="#ffffff" stroke="#69aeb3" stroke-width="3"/><text class="chip" x="3150" y="1275">60 分钟</text>
+    <rect x="3260" y="1218" width="200" height="112" rx="16" fill="#e4f2f3" stroke="#69aeb3" stroke-width="3"/>
+    <text class="small-center" x="3360" y="1260">预测视界距离</text>
+    <text class="small-center" x="3360" y="1295">条件编码</text>
+  </g>
+
+  <path class="inner-flow" d="M3015 1332 V1365"/>
+  <rect x="2580" y="1375" width="880" height="86" rx="18" fill="#ffffff" stroke="#69aeb3" stroke-width="4"/>
+  <text class="body-center" x="3020" y="1410">基于 F_out 的多头注意力</text>
+  <text class="small-center" x="3020" y="1443">预测视界特异性上下文表示</text>
+
+  <path class="inner-flow" d="M3020 1463 V1490"/>
+  <rect x="2580" y="1500" width="425" height="105" rx="18" fill="#e4f2f3" stroke="#69aeb3" stroke-width="3"/>
+  <text class="body-center" x="2792" y="1540">长期上下文校准</text>
+  <text class="small-center" x="2792" y="1580">全局均值 + 线性趋势</text>
+  <rect x="3035" y="1500" width="425" height="105" rx="18" fill="#e4f2f3" stroke="#69aeb3" stroke-width="3"/>
+  <text class="body-center" x="3247" y="1540">渐进式特征细化</text>
+  <text class="small-center" x="3247" y="1580">跨有序预测视界</text>
+
+  <path class="inner-flow" d="M3020 1608 V1625"/>
+  <rect x="2700" y="1630" width="635" height="70" rx="18" fill="#ffffff" stroke="#69aeb3" stroke-width="4"/>
+  <text class="body-center" x="3017" y="1675">4 个视界特异性多层感知机头 → 残差变化量</text>
+  <path class="inner-flow" d="M3017 1703 V1725"/>
+  <path class="anchor-flow" d="M2600 1770 H2730"/>
+  <text class="small-center" x="2620" y="1748">残差锚点 y_t</text>
+  <rect x="2745" y="1732" width="715" height="70" rx="14" fill="#d8eef0" stroke="#4c9ba1" stroke-width="4"/>
+  <text class="shape" x="3102" y="1769"><tspan>ŷ = [ŷ</tspan><tspan baseline-shift="sub" font-size="20">t+3</tspan><tspan baseline-shift="baseline" font-size="27">, ŷ</tspan><tspan baseline-shift="sub" font-size="20">t+6</tspan><tspan baseline-shift="baseline" font-size="27">, ŷ</tspan><tspan baseline-shift="sub" font-size="20">t+9</tspan><tspan baseline-shift="baseline" font-size="27">, ŷ</tspan><tspan baseline-shift="sub" font-size="20">t+12</tspan><tspan baseline-shift="baseline" font-size="27">]  [B, 4]</tspan></text>
+  <text class="small-center" x="3102" y="1828">15 / 30 / 45 / 60 分钟</text>
+
+  <!-- Inter-stage data flow -->
+  <path class="flow" d="M560 862 V965" stroke="#62707f" marker-end="url(#arrow-gray)"/>
+
+  <path class="flow" d="M1052 1237 H1132 V255 H1283" stroke="#2878a8" marker-end="url(#arrow-blue)"/>
+  <rect x="1072" y="315" width="120" height="72" rx="12" fill="#ffffff" opacity="0.96"/>
+  <text class="small-center" x="1132" y="343">血糖</text>
+  <text class="small-center" x="1132" y="375">[B,24,4]</text>
+
+  <path class="flow" d="M1052 1570 H1180 V300 H1283" stroke="#318469" marker-end="url(#arrow-green)"/>
+  <rect x="1100" y="425" width="150" height="92" rx="12" fill="#ffffff" opacity="0.96"/>
+  <text class="small-center" x="1175" y="454">生理信号</text>
+  <text class="small-center" x="1175" y="486">[B×N,24,4]</text>
+
+  <path class="flow" d="M2002 1082 V1178" stroke="#318469" marker-end="url(#arrow-green)"/>
+  <text class="small-center" x="2080" y="1146">P₀</text>
+
+  <path class="flow" d="M2312 990 H2388 V310 H2488" stroke="#2878a8" marker-end="url(#arrow-blue)"/>
+  <rect x="2335" y="353" width="105" height="60" rx="12" fill="#ffffff" opacity="0.96"/>
+  <text class="small-center" x="2388" y="392">C</text>
+
+  <path class="flow" d="M2312 1748 H2428 V660 H2488" stroke="#72539c" marker-end="url(#arrow-purple)"/>
+  <rect x="2370" y="700" width="115" height="60" rx="12" fill="#ffffff" opacity="0.96"/>
+  <text class="small-center" x="2427" y="739">P_g</text>
+
+  <path class="flow" d="M3015 952 V1048" stroke="#c75c56" marker-end="url(#arrow-coral)"/>
+</svg>

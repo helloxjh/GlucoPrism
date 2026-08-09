@@ -1,0 +1,12 @@
+{
+  "model": "autoformer",
+  "display_name": "Autoformer",
+  "encoder_layers": 2,
+  "decoder_layers": 1,
+  "feedforward_multiplier": 4,
+  "moving_average_kernel": 5,
+  "autocorrelation_factor": 3,
+  "label_steps": 12,
+  "prediction_steps": 12,
+  "prediction_horizons_minutes": [15, 30, 45, 60]
+}

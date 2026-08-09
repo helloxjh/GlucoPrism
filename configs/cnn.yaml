@@ -1,0 +1,12 @@
+{
+  "model": "cnn",
+  "display_name": "1D-CNN",
+  "input_modalities": ["cgm", "physio"],
+  "hidden_channels": 64,
+  "num_conv_layers": 2,
+  "kernel_size": 3,
+  "activation": "relu",
+  "dropout": 0.1,
+  "pooling": "adaptive_average",
+  "prediction_horizons_minutes": [15, 30, 45, 60]
+}

@@ -1,0 +1,10 @@
+{
+  "model": "crnn",
+  "display_name": "CRNN",
+  "conv_layers": 2,
+  "kernel_size": 3,
+  "recurrent_layers": 1,
+  "activation": "relu",
+  "prediction_steps": 12,
+  "prediction_horizons_minutes": [15, 30, 45, 60]
+}
