@@ -19,6 +19,9 @@ big-ideas-lab-glycemic-variability-and-wearable-device-data-1.1.3/
 processed_big_ideas/
 processed_big_ideas_60min/
 processed_big_ideas_smoke_001/
+OhioT1DM/
+processed_ohiot1dm/
+processed_ohiot1dm_60min/
 
 # Training outputs and generated experiment artifacts
 runs/

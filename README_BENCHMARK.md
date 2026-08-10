@@ -31,6 +31,52 @@ python benchmark.py --model dcrnn
 python benchmark.py --model crnn
 ```
 
+## OhioT1DM External Validation
+
+OhioT1DM uses four configurable physiological nodes in the order `activity`,
+`gsr`, `skin_temperature`, and `heart_rate`. Preprocessing aggregates all
+signals to 5-minute intervals, creates 24-step histories and 12-step targets
+inside each XML recording, and never creates a window across the original
+training/testing file boundary.
+
+Prepare the six-subject OhioT1DM dataset:
+
+```bash
+source .venv_torch/bin/activate
+python preprocess_ohiot1dm.py \
+  --data-root OhioT1DM \
+  --output-dir processed_ohiot1dm_60min
+```
+
+Run a one-fold, one-epoch integration check in an isolated result directory:
+
+```bash
+python benchmark.py \
+  --dataset ohiot1dm \
+  --model glucoprism \
+  --epochs 1 \
+  --fold-limit 1 \
+  --output-root results/OhioT1DM_smoke \
+  --overwrite
+```
+
+Run the formal six-fold LOSO experiment with the same model and training
+hyperparameters used by the primary experiment:
+
+```bash
+bash scripts/run_ohiot1dm_glucoprism.sh
+```
+
+Formal outputs are isolated under `results/OhioT1DM/GlucoPrism`. If the run is
+interrupted after one or more folds have completed, preserve those folds with:
+
+```bash
+bash scripts/run_ohiot1dm_glucoprism.sh --resume
+```
+
+Do not combine `--resume` with `--overwrite`. An interrupted fold is retrained;
+fully completed folds are read from the existing artifacts and skipped.
+
 An existing model result directory is never replaced implicitly. Use
 `--overwrite` only when intentionally replacing that model's complete run.
 

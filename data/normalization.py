@@ -57,6 +57,9 @@ class StandardizedDataset(Dataset):
         self.history_steps = getattr(base_dataset, "history_steps")
         self.num_physio_nodes = getattr(base_dataset, "num_physio_nodes")
         self.future_steps = getattr(base_dataset, "future_steps")
+        self.node_names = getattr(base_dataset, "node_names", ())
+        self.dataset_name = getattr(base_dataset, "dataset_name", "unknown")
+        self.A_prior = getattr(base_dataset, "A_prior", None)
 
     def __len__(self) -> int:
         return len(self.base_dataset)

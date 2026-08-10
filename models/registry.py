@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Sequence
+from typing import Optional, Sequence
 
-from torch import nn
+from torch import Tensor, nn
 
 from .autoformer import AutoformerBaseline, load_autoformer_config
 from .baseline_utils import load_json_yaml
@@ -15,7 +15,7 @@ from .graph_wavenet import GraphWaveNetBaseline, load_graphwavenet_config
 from .informer import InformerBaseline, load_informer_config
 from .lstm_baseline import LSTMBaseline
 from .patchtst import PatchTSTBaseline, load_patchtst_config
-from .st_msffnet import ST_MSFFNet
+from .st_msffnet import DEFAULT_NODE_NAMES, ST_MSFFNet
 
 
 AVAILABLE_MODELS = (
@@ -44,6 +44,8 @@ def build_forecasting_model(
     enable_horizon_refinement: bool = False,
     lstm_num_layers: int = 1,
     horizon_minutes: Sequence[int] = (15, 30, 45, 60),
+    node_names: Optional[Sequence[str]] = None,
+    A_prior: Optional[Tensor] = None,
 ) -> nn.Module:
     """Construct a registered model without changing the shared training loop."""
     normalized = model_name.lower()
@@ -58,6 +60,8 @@ def build_forecasting_model(
             ablation_mode=ablation_mode,
             enable_horizon_refinement=enable_horizon_refinement,
             horizon_minutes=horizon_minutes,
+            node_names=DEFAULT_NODE_NAMES if node_names is None else tuple(node_names),
+            A_prior=A_prior,
         )
     if normalized == "lstm":
         return LSTMBaseline(

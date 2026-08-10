@@ -7,6 +7,7 @@ import argparse
 from pathlib import Path
 
 from data.datasets import DummyPhysioNetDataset, ProcessedBigIdeasDataset
+from data.ohiot1dm_dataset import ProcessedOhioT1DMDataset
 from data.splits import build_loso_splits
 from evaluation.metrics import format_metrics
 from experiments.benchmark_artifacts import BenchmarkArtifactWriter
@@ -16,17 +17,37 @@ from models.registry import AVAILABLE_MODELS, get_registered_model_config
 from training.trainer import run_loso_training
 
 
+DATASET_DEFAULTS = {
+    "big_ideas": {
+        "data_dir": Path("processed_big_ideas_60min"),
+        "output_root": Path("results"),
+        "num_val_subjects": 3,
+    },
+    "ohiot1dm": {
+        "data_dir": Path("processed_ohiot1dm_60min"),
+        "output_root": Path("results") / "OhioT1DM",
+        "num_val_subjects": 1,
+    },
+}
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Unified LOSO-CV benchmark for continuous glucose prediction."
     )
     parser.add_argument("--model", required=True, choices=AVAILABLE_MODELS)
-    parser.add_argument("--data-dir", type=Path, default=Path("processed_big_ideas_60min"))
-    parser.add_argument("--output-root", type=Path, default=Path("results"))
+    parser.add_argument(
+        "--dataset",
+        choices=tuple(DATASET_DEFAULTS),
+        default="big_ideas",
+        help="Dataset protocol to use; defaults preserve the original BIG IDEAs benchmark.",
+    )
+    parser.add_argument("--data-dir", type=Path, default=None)
+    parser.add_argument("--output-root", type=Path, default=None)
     parser.add_argument("--use-dummy", action="store_true")
     parser.add_argument("--num-subjects", type=int, default=16)
     parser.add_argument("--samples-per-subject", type=int, default=8)
-    parser.add_argument("--num-val-subjects", type=int, default=3)
+    parser.add_argument("--num-val-subjects", type=int, default=None)
     parser.add_argument("--epochs", type=int, default=30)
     parser.add_argument("--batch-size", type=int, default=64)
     parser.add_argument("--hidden-dim", type=int, default=64)
@@ -86,6 +107,16 @@ def main() -> None:
         raise ValueError("--resume and --overwrite cannot be used together.")
     set_seed(args.seed)
     device = resolve_device(args.device)
+    dataset_defaults = DATASET_DEFAULTS[args.dataset]
+    data_dir = args.data_dir or dataset_defaults["data_dir"]
+    output_root = args.output_root or dataset_defaults["output_root"]
+    num_val_subjects = (
+        args.num_val_subjects
+        if args.num_val_subjects is not None
+        else int(dataset_defaults["num_val_subjects"])
+    )
+    if num_val_subjects <= 0:
+        raise ValueError("--num-val-subjects must be positive.")
 
     if args.use_dummy:
         dataset = DummyPhysioNetDataset(
@@ -97,16 +128,23 @@ def main() -> None:
             seed=args.seed,
         )
         print(f"[INFO] Using dummy data: samples={len(dataset)}")
-    else:
-        dataset = ProcessedBigIdeasDataset(args.data_dir, required_future_steps=12)
+    elif args.dataset == "big_ideas":
+        dataset = ProcessedBigIdeasDataset(data_dir, required_future_steps=12)
         print(
-            f"[INFO] Using real data: samples={len(dataset)}, "
+            f"[INFO] Using BIG IDEAs data: samples={len(dataset)}, "
             f"subjects={len(set(dataset.subject_ids))}, history_steps={dataset.history_steps}"
+        )
+    else:
+        dataset = ProcessedOhioT1DMDataset(data_dir, required_future_steps=12)
+        print(
+            f"[INFO] Using OhioT1DM data: samples={len(dataset)}, "
+            f"subjects={len(set(dataset.subject_ids))}, history_steps={dataset.history_steps}, "
+            f"physio_nodes={dataset.node_names}"
         )
 
     splits = build_loso_splits(
         dataset.subject_ids,
-        num_val_subjects=args.num_val_subjects,
+        num_val_subjects=num_val_subjects,
         seed=args.seed,
     )
     if args.fold_start < 1 or args.fold_start > len(splits):
@@ -121,16 +159,24 @@ def main() -> None:
     config = vars(args).copy()
     config.update(
         {
+            "data_dir": str(data_dir),
+            "output_root": str(output_root),
+            "num_val_subjects": num_val_subjects,
+            "dataset_resolved": "dummy" if args.use_dummy else args.dataset,
+            "data_dir_resolved": str(data_dir),
+            "output_root_resolved": str(output_root),
+            "num_val_subjects_resolved": num_val_subjects,
             "device_resolved": str(device),
             "history_steps": dataset.history_steps,
             "num_physio_nodes": dataset.num_physio_nodes,
+            "node_names": tuple(getattr(dataset, "node_names", ())),
             "prediction_horizons_minutes": (15, 30, 45, 60),
             "selected_fold_ids": tuple(split.fold_id for split in selected_splits),
             "model_architecture": get_registered_model_config(args.model),
         }
     )
     artifacts = BenchmarkArtifactWriter(
-        args.output_root,
+        output_root,
         args.model,
         config,
         overwrite=args.overwrite,
@@ -209,7 +255,7 @@ def main() -> None:
                 f"{format_metrics('mean', mean_loss, mean_metrics)}"
             )
         print(f"[INFO] Saved benchmark summary: {summary_path}")
-        print(f"[INFO] Saved benchmark LaTeX table: {args.output_root / 'benchmark_table.tex'}")
+        print(f"[INFO] Saved benchmark LaTeX table: {output_root / 'benchmark_table.tex'}")
     finally:
         logger.close()
 

@@ -15,6 +15,25 @@ from .physio_graph_encoder import PhysioGraphEncoder
 
 
 DEFAULT_NODE_NAMES = ("acc_l2", "eda", "temp", "hr", "bvp", "ibi")
+NODE_NAME_ALIASES = {
+    "acc": "activity",
+    "acc_l2": "activity",
+    "activity": "activity",
+    "basis_steps": "activity",
+    "steps": "activity",
+    "basis_gsr": "eda",
+    "eda": "eda",
+    "gsr": "eda",
+    "basis_skin_temperature": "temp",
+    "skin_temp": "temp",
+    "skin_temperature": "temp",
+    "temp": "temp",
+    "basis_heart_rate": "hr",
+    "heart_rate": "hr",
+    "hr": "hr",
+    "bvp": "bvp",
+    "ibi": "ibi",
+}
 ABLATION_MODES = {
     "full",
     "cgm_only",
@@ -26,8 +45,11 @@ ABLATION_MODES = {
 
 
 def build_physiology_prior(node_names: Sequence[str] = DEFAULT_NODE_NAMES) -> Tensor:
-    """Build a non-negative physiology-prior adjacency matrix for wearable nodes."""
-    names = [name.lower() for name in node_names]
+    """Build a prior graph from dataset-specific physiological node names."""
+    names = [
+        NODE_NAME_ALIASES.get(str(name).strip().lower(), str(name).strip().lower())
+        for name in node_names
+    ]
     n = len(names)
     prior = torch.zeros(n, n, dtype=torch.float32)
     edges = {
@@ -36,10 +58,8 @@ def build_physiology_prior(node_names: Sequence[str] = DEFAULT_NODE_NAMES) -> Te
         ("bvp", "ibi"): 0.75,
         ("eda", "hr"): 0.45,
         ("eda", "temp"): 0.40,
-        ("acc_l2", "hr"): 0.50,
-        ("acc", "hr"): 0.50,
-        ("acc_l2", "eda"): 0.30,
-        ("acc", "eda"): 0.30,
+        ("activity", "hr"): 0.50,
+        ("activity", "eda"): 0.30,
         ("temp", "hr"): 0.25,
         ("temp", "bvp"): 0.25,
     }
@@ -90,6 +110,11 @@ class ST_MSFFNet(nn.Module):
         self.hidden_dim = hidden_dim
         self.ablation_mode = ablation_mode
         if A_prior is None:
+            if len(node_names) < num_physio_nodes:
+                raise ValueError(
+                    f"node_names contains {len(node_names)} entries, "
+                    f"but num_physio_nodes={num_physio_nodes}."
+                )
             selected_names = tuple(node_names[:num_physio_nodes])
             A_prior = build_physiology_prior(selected_names)
 
@@ -164,7 +189,7 @@ class ST_MSFFNet(nn.Module):
         """
         Args:
             cgm: [B, T=24, 1] standardized CGM history.
-            physio: [B, N=6, T=24] standardized physiological signals.
+            physio: [B, N, T=24] standardized physiological signals.
         Returns:
             pred: [B, 4] standardized predictions for [15, 30, 45, 60] min.
         """
@@ -176,7 +201,7 @@ class ST_MSFFNet(nn.Module):
         last_cgm = cgm[:, -1, 0:1]  # [B, 1]
 
         # --- CGM temporal encoding ---
-        cgm_aug = self._augment_cgm(cgm)  # [B, T, 3]
+        cgm_aug = self._augment_cgm(cgm)  # [B, T, 4]
         cgm_feature = self.cgm_time_encoder(cgm_aug)  # [B, T, H]
 
         physio_node_feature = cgm_feature.new_zeros(

@@ -155,6 +155,13 @@ def run_loso_training(
     fold_metrics: List[Dict[str, float]] = []
     history_steps = int(getattr(dataset, "history_steps"))
     num_physio_nodes = int(getattr(dataset, "num_physio_nodes"))
+    node_names = tuple(getattr(dataset, "node_names", ()))
+    A_prior = getattr(dataset, "A_prior", None)
+    if node_names and len(node_names) != num_physio_nodes:
+        raise ValueError(
+            f"dataset node_names has {len(node_names)} entries, "
+            f"expected {num_physio_nodes}."
+        )
     print(f"[INFO] Benchmark model: {model_name}")
     if model_name.lower() == "glucoprism":
         print(f"[INFO] Core-module ablation mode: {ablation_mode}")
@@ -199,6 +206,8 @@ def run_loso_training(
             ablation_mode=ablation_mode,
             enable_horizon_refinement=(horizon_head_mode == "refined"),
             lstm_num_layers=lstm_num_layers,
+            node_names=node_names or None,
+            A_prior=A_prior,
         ).to(device)
         total_parameters, trainable_parameters = count_parameters(model)
         print(

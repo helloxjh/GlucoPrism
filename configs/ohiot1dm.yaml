@@ -1,0 +1,36 @@
+{
+  "dataset": "OhioT1DM 2018",
+  "subjects": ["559", "563", "570", "575", "588", "591"],
+  "sampling_interval_minutes": 5,
+  "history_steps": 24,
+  "future_steps": 12,
+  "prediction_horizons_minutes": [15, 30, 45, 60],
+  "num_validation_subjects": 1,
+  "physiological_nodes": [
+    {
+      "name": "activity",
+      "source": "basis_steps",
+      "aggregation": "sum"
+    },
+    {
+      "name": "gsr",
+      "source": "basis_gsr",
+      "aggregation": "mean"
+    },
+    {
+      "name": "skin_temperature",
+      "source": "basis_skin_temperature",
+      "aggregation": "mean",
+      "unit_conversion": "fahrenheit_to_celsius"
+    },
+    {
+      "name": "heart_rate",
+      "source": "basis_heart_rate",
+      "aggregation": "mean"
+    }
+  ],
+  "maximum_forward_fill_gap_hours": 2.0,
+  "require_observed_cgm_history": true,
+  "require_observed_cgm_targets": true,
+  "window_within_recording_only": true
+}

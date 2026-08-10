@@ -19,7 +19,7 @@ class GlucoPrism(ST_MSFFNet):
 
     Input contract:
         cgm: Tensor [batch_size, history_steps=24, 1]
-        physio: Tensor [batch_size, num_physio_nodes=6, history_steps=24]
+        physio: Tensor [batch_size, num_physio_nodes, history_steps=24]
 
     Output contract:
         pred: Tensor [batch_size, 4]
@@ -30,7 +30,7 @@ class GlucoPrism(ST_MSFFNet):
         self,
         history_steps: int = 24,
         cgm_dim: int = 1,
-        num_physio_nodes: int = 6,
+        num_physio_nodes: int = len(DEFAULT_NODE_NAMES),
         hidden_dim: int = 64,
         num_heads: int = 4,
         graph_layers: int = 2,
